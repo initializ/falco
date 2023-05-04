@@ -117,9 +117,7 @@ jobs:
             ${{ github.workspace }}/build/falco-*.rpm
             
   build-musl-package:
-    # x86_64 only for now
-    if: ${{ inputs.arch == 'x86_64' }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ (inputs.arch == 'aarch64' && fromJSON('[ "self-hosted", "linux", "ARM64" ]')) || 'ubuntu-latest' }}
     container: alpine:3.17
     steps:
       # Always install deps before invoking checkout action, to properly perform a full clone.
@@ -129,8 +127,6 @@ jobs:
     
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
           
       - name: Prepare project
         run: |
@@ -150,11 +146,11 @@ jobs:
       - name: Rename static package
         run: |
           cd build
-          mv falco-${{ inputs.version }}-x86_64.tar.gz falco-${{ inputs.version }}-static-x86_64.tar.gz 
+          mv falco-${{ inputs.version }}-${{ inputs.arch }}.tar.gz falco-${{ inputs.version }}-static-${{ inputs.arch }}.tar.gz 
           
       - name: Upload Falco static package
         uses: actions/upload-artifact@v3
         with:
-          name: falco-${{ inputs.version }}-static-x86_64.tar.gz
+          name: falco-${{ inputs.version }}-static-${{ inputs.arch }}.tar.gz
           path: |
-            ${{ github.workspace }}/build/falco-${{ inputs.version }}-static-x86_64.tar.gz
+            ${{ github.workspace }}/build/falco-${{ inputs.version }}-static-${{ inputs.arch }}.tar.gz

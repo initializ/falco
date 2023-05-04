@@ -72,6 +72,12 @@ jobs:
         with:
           name: falco-${{ inputs.version }}-static-x86_64.tar.gz
           path: /tmp/falco-build-bin-static
+          
+      - name: Download static binary aarch64
+        uses: actions/download-artifact@v3
+        with:
+          name: falco-${{ inputs.version }}-static-aarch64.tar.gz
+          path: /tmp/falco-build-bin-static    
         
       - name: Import gpg key 
         env:
@@ -106,6 +112,7 @@ jobs:
       - name: Publish static
         run: |
           ./scripts/publish-bin -f /tmp/falco-build-bin-static/falco-${{ inputs.version }}-static-x86_64.tar.gz -r bin${{ inputs.bucket_suffix }} -a x86_64
+          ./scripts/publish-bin -f /tmp/falco-build-bin-static/falco-${{ inputs.version }}-static-aarch64.tar.gz -r bin${{ inputs.bucket_suffix }} -a aarch64
           
   publish-packages-deb:
     runs-on: ubuntu-latest
