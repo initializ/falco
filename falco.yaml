@@ -345,6 +345,8 @@ http_output:
   # Path to a folder that will be used as the CA certificate store. CA certificate need to be
   # stored as indivitual PEM files in this directory.
   ca_path: "/etc/ssl/certs"
+  # Whether to echo server answers to stdout
+  echo: true
 
 # [Stable] `program_output`
 #
